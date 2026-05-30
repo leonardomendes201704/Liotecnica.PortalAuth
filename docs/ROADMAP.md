@@ -70,18 +70,18 @@ Entregas previstas:
 
 ## Fase 3 - UI Kit Razor
 
-Status: iniciada.
+Status: concluida.
 
 Objetivo: criar identidade visual e componentes Razor reutilizaveis.
 
 Entregas previstas:
 
-- Layout base.
-- Sidebar e topbar.
-- Breadcrumb.
-- Botoes, cards, tabelas, formularios e badges.
-- Tokens CSS.
-- Documentacao de uso.
+- [x] Layout base.
+- [x] Sidebar e topbar.
+- [x] Breadcrumb.
+- [x] Botoes, cards, tabelas, formularios e badges.
+- [x] Tokens CSS.
+- [x] Documentacao de uso.
 
 ## Fase 4 - Seguranca e Observabilidade
 

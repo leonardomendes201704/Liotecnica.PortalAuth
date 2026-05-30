@@ -1,13 +1,4 @@
 <!DOCTYPE html>
-@using Liotecnica.PortalAuth.Web.Security
-@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService
-@{
-    var canViewSystems = (await AuthorizationService.AuthorizeAsync(User, null, PermissionCodes.SystemView)).Succeeded;
-    var canManagePermissions = (await AuthorizationService.AuthorizeAsync(User, null, PermissionCodes.PermissionManage)).Succeeded;
-    var canManageRoles = (await AuthorizationService.AuthorizeAsync(User, null, PermissionCodes.RoleManage)).Succeeded;
-    var canManageUsers = (await AuthorizationService.AuthorizeAsync(User, null, PermissionCodes.UserManage)).Succeeded;
-    var canViewAudit = (await AuthorizationService.AuthorizeAsync(User, null, PermissionCodes.AuditView)).Succeeded;
-}
 <html lang="pt-br">
 <head>
     <meta charset="utf-8" />
@@ -19,63 +10,16 @@
 </head>
 <body class="portal-page">
     <div class="portal-shell">
-        <aside class="portal-sidebar" aria-label="Menu principal">
-            <div class="portal-brand">
-                <span class="portal-brand__symbol">L</span>
-                <span>Portal Corporativo</span>
-            </div>
-
-            <nav class="portal-nav">
-                <a class="portal-nav__item" asp-controller="Dashboard" asp-action="Index"><span>IN</span>Tela Inicial</a>
-                <a class="portal-nav__item" asp-controller="Account" asp-action="Profile"><span>MP</span>Meu Perfil</a>
-                <a class="portal-nav__item" asp-controller="Changelog" asp-action="Index"><span>CL</span>Changelog</a>
-                <a class="portal-nav__item" asp-controller="Status" asp-action="Index"><span>ST</span>Status</a>
-                @if (canViewSystems)
-                {
-                    <a class="portal-nav__item" asp-controller="Systems" asp-action="Index"><span>SI</span>Sistemas</a>
-                }
-                @if (canManagePermissions)
-                {
-                    <a class="portal-nav__item" asp-controller="Permissions" asp-action="Index"><span>PE</span>Permissoes</a>
-                }
-                @if (canManageRoles)
-                {
-                    <a class="portal-nav__item" asp-controller="Roles" asp-action="Index"><span>PF</span>Perfis</a>
-                }
-                @if (canManageUsers)
-                {
-                    <a class="portal-nav__item" asp-controller="Users" asp-action="Index"><span>US</span>Usuarios</a>
-                }
-                @if (canViewAudit)
-                {
-                    <a class="portal-nav__item" asp-controller="Audit" asp-action="Index"><span>AU</span>Auditoria</a>
-                }
-            </nav>
-        </aside>
+        <partial name="_PortalSidebar" />
 
         <main class="portal-main">
-            <header class="portal-topbar">
-                <label class="portal-search">
-                    <span>Buscar</span>
-                    <input type="search" placeholder="Buscar sistemas, usuarios, permissoes..." />
-                </label>
-
-                <div class="portal-userbar">
-                    <div class="portal-user">
-                        <span class="portal-avatar">@((User.Identity?.Name ?? "U")[..1].ToUpperInvariant())</span>
-                        <div>
-                            <strong>@User.Identity?.Name</strong>
-                            <small>PortalAuth</small>
-                        </div>
-                    </div>
-                    <form asp-controller="Account" asp-action="Logout" method="post">
-                        @Html.AntiForgeryToken()
-                        <button class="portal-logout" type="submit">Sair</button>
-                    </form>
-                </div>
-            </header>
+            <partial name="_PortalTopbar" />
 
             <section class="portal-content">
+                @if (ViewData["Breadcrumbs"] is IReadOnlyCollection<BreadcrumbItemViewModel> breadcrumbs)
+                {
+                    <partial name="_Breadcrumb" model="breadcrumbs" />
+                }
                 @RenderBody()
             </section>
         </main>

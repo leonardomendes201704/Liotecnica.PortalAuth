@@ -9,6 +9,7 @@ Backlog vivo do PortalAuth. Itens podem ser promovidos para o roadmap conforme p
 3. Criar exportacao CSV de usuarios e sistemas.
 4. Expandir status operacional com alertas ativos.
 5. Evoluir OpenTelemetry com traces e metricas exportaveis.
+6. Criar biblioteca de componentes Razor avancados a partir do UI Kit base.
 
 ## Melhorias Tecnicas
 
@@ -22,9 +23,9 @@ Backlog vivo do PortalAuth. Itens podem ser promovidos para o roadmap conforme p
 
 ## UI/UX
 
-- Criar layout corporativo inicial.
-- Criar tokens CSS da Liotecnica.
-- Criar componentes Razor reutilizaveis.
+- Evoluir layout corporativo com tema por unidade/empresa.
+- Expandir tokens CSS da Liotecnica conforme identidade visual final.
+- Criar componentes Razor avancados para modal, tabs, toast e empty state.
 - Criar estados de loading, vazio e erro.
 - Criar variacao mobile validada da tela de login.
 

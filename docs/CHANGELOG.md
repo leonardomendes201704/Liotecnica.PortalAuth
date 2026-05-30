@@ -2,6 +2,20 @@
 
 Historico detalhado das entregas do PortalAuth.
 
+## 0020 - UI Kit Razor
+
+Data: 30/05/2026
+
+Mudancas:
+
+- Criados tokens CSS centralizados para cores, espacamentos, raios, sombras e superficies.
+- Criadas classes reutilizaveis `ui-button`, `ui-card`, `ui-badge`, `ui-grid` e `ui-breadcrumb`.
+- Criados partials `_PortalSidebar`, `_PortalTopbar` e `_Breadcrumb`.
+- Dashboard passou a reutilizar sidebar e topbar compartilhados.
+- Criada tela viva `/UiKit` com exemplos dos componentes.
+- Criado documento `docs/UI-KIT.md`.
+- Criada documentacao da entrega em `docs/entregas/0020-ui-kit-razor`.
+
 ## 0019 - Hardening, perfil do usuario e prontidao para producao
 
 Data: 30/05/2026

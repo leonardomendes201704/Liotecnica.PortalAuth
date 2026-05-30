@@ -1,0 +1,29 @@
+@{
+    var displayName = ViewData["UserDisplayName"] as string ?? User.Identity?.Name ?? "Usuario";
+    var department = ViewData["UserDepartment"] as string ?? "PortalAuth";
+    var searchPlaceholder = ViewData["SearchPlaceholder"] as string ?? "Buscar sistemas, usuarios, permissoes...";
+    var avatar = string.IsNullOrWhiteSpace(displayName) ? "U" : displayName[..1].ToUpperInvariant();
+}
+
+<header class="portal-topbar">
+    <label class="portal-search">
+        <span>Buscar</span>
+        <input type="search" placeholder="@searchPlaceholder" />
+    </label>
+
+    <div class="portal-userbar">
+        <button class="portal-icon-button" type="button" aria-label="Notificacoes">3</button>
+        <button class="portal-icon-button" type="button" aria-label="Ajuda">?</button>
+        <div class="portal-user">
+            <span class="portal-avatar">@avatar</span>
+            <div>
+                <strong>@displayName</strong>
+                <small>@department</small>
+            </div>
+        </div>
+        <form asp-controller="Account" asp-action="Logout" method="post">
+            @Html.AntiForgeryToken()
+            <button class="portal-logout" type="submit">Sair</button>
+        </form>
+    </div>
+</header>

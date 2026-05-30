@@ -1,0 +1,123 @@
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "UI Kit";
+}
+
+<section class="admin-header">
+    <div>
+        <p class="admin-kicker">Design System</p>
+        <h1>UI Kit Razor</h1>
+        <p>Referencia viva para tokens, componentes e padroes visuais reutilizaveis do PortalAuth.</p>
+    </div>
+    <a class="ui-button" asp-controller="Dashboard" asp-action="Index">Voltar ao portal</a>
+</section>
+
+<section class="ui-section">
+    <h2>Tokens</h2>
+    <div class="ui-token-grid">
+        <article class="ui-token">
+            <span class="ui-token__swatch" style="background: var(--color-primary);"></span>
+            <strong>Primaria</strong>
+            <code>--color-primary</code>
+        </article>
+        <article class="ui-token">
+            <span class="ui-token__swatch" style="background: var(--color-success);"></span>
+            <strong>Sucesso</strong>
+            <code>--color-success</code>
+        </article>
+        <article class="ui-token">
+            <span class="ui-token__swatch" style="background: var(--color-warning);"></span>
+            <strong>Alerta</strong>
+            <code>--color-warning</code>
+        </article>
+        <article class="ui-token">
+            <span class="ui-token__swatch" style="background: var(--color-danger);"></span>
+            <strong>Critico</strong>
+            <code>--color-danger</code>
+        </article>
+    </div>
+</section>
+
+<section class="ui-section">
+    <h2>Botoes e badges</h2>
+    <div class="ui-card">
+        <div class="admin-row-actions">
+            <a class="ui-button" href="#">Acao primaria</a>
+            <a class="ui-button ui-button--secondary" href="#">Acao secundaria</a>
+            <span class="ui-badge ui-badge--success">Ativo</span>
+            <span class="ui-badge ui-badge--warning">Atencao</span>
+            <span class="ui-badge ui-badge--danger">Bloqueado</span>
+        </div>
+    </div>
+</section>
+
+<section class="ui-section">
+    <h2>Cards</h2>
+    <div class="ui-grid">
+        <article class="ui-card">
+            <h3>Modulo administrativo</h3>
+            <p>Use cards para agrupar contexto, indicadores e acoes de baixa complexidade.</p>
+        </article>
+        <article class="ui-card">
+            <h3>Indicador operacional</h3>
+            <p>Combine cards com badges para representar status e prioridade.</p>
+        </article>
+        <article class="ui-card">
+            <h3>Mensagem orientativa</h3>
+            <p>Prefira textos curtos, objetivos e com proxima acao evidente.</p>
+        </article>
+    </div>
+</section>
+
+<section class="ui-section">
+    <h2>Tabelas</h2>
+    <div class="ui-preview-table">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Componente</th>
+                    <th>Uso</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Sidebar</strong><span>Navegacao principal</span></td>
+                    <td>Layout compartilhado</td>
+                    <td><span class="ui-badge ui-badge--success">Pronto</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Breadcrumb</strong><span>Contexto de navegacao</span></td>
+                    <td>Partial `_Breadcrumb`</td>
+                    <td><span class="ui-badge ui-badge--success">Pronto</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="ui-section">
+    <h2>Formulario</h2>
+    <form class="admin-card admin-form">
+        <div class="admin-form-grid">
+            <label>
+                Campo texto
+                <input type="text" value="Exemplo" />
+            </label>
+            <label>
+                Selecao
+                <select>
+                    <option>Opcao padrao</option>
+                </select>
+            </label>
+            <label class="wide">
+                Observacao
+                <textarea>Padrao visual para textos maiores.</textarea>
+            </label>
+        </div>
+        <div class="admin-actions">
+            <a href="#">Cancelar</a>
+            <button type="button">Salvar</button>
+        </div>
+    </form>
+</section>

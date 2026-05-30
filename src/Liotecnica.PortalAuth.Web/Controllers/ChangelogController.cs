@@ -14,6 +14,25 @@ public sealed class ChangelogController : Controller
             Entries =
             [
                 new(
+                    "0020",
+                    "UI Kit Razor",
+                    "30/05/2026",
+                    "A Fase 3 foi concluida com tokens CSS, componentes reutilizaveis, tela viva de referencia e documentacao de uso.",
+                    [
+                        "Criados tokens CSS para cores, espacamentos, raios, sombras e superficies.",
+                        "Criadas classes reutilizaveis para botoes, cards, badges, grids e breadcrumbs.",
+                        "Criados partials para sidebar, topbar e breadcrumb.",
+                        "Dashboard passou a reutilizar sidebar e topbar compartilhados.",
+                        "Criada tela autenticada UI Kit.",
+                        "Criada documentacao `docs/UI-KIT.md`."
+                    ],
+                    [
+                        "Criado `UiKitController`.",
+                        "Criados partials `_PortalSidebar`, `_PortalTopbar` e `_Breadcrumb`.",
+                        "Criado `BreadcrumbItemViewModel`.",
+                        "Mantida compatibilidade visual com as telas administrativas existentes."
+                    ]),
+                new(
                     "0019",
                     "Hardening, perfil do usuario e prontidao para producao",
                     "30/05/2026",
