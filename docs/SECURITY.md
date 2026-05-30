@@ -37,11 +37,15 @@ Esta primeira entrega aplica apenas a fundacao de seguranca. O objetivo e garant
 - CSP inicial com `default-src 'self'`.
 - Swagger habilitado apenas em desenvolvimento.
 - Usuario PostgreSQL dedicado para a aplicacao local.
+- Checklist OWASP documentado em `docs/OWASP-CHECKLIST.md`.
+- OpenTelemetry habilitado para traces Web/API com exportador OTLP opcional.
+- Status operacional com historico e alertas ativos.
 
 ## Ainda Nao Implementado
 
 - Redaction automatica de payloads sensiveis em logs futuros.
-- OpenTelemetry com exportacao de traces e metricas.
+- Auditoria de dependencias no pipeline.
+- MFA para usuarios administrativos.
 
 ## Swagger
 
@@ -87,4 +91,4 @@ A exportacao CSV da auditoria e limitada, auditada e aplica escaping nos campos 
 
 ## Proximo Passo de Seguranca
 
-Na fase seguinte, evoluir redaction automatica de logs, OpenTelemetry e alertas ativos.
+Na fase seguinte, evoluir redaction automatica de logs, MFA administrativo e auditoria de dependencias no pipeline.

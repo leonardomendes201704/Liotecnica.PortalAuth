@@ -72,7 +72,8 @@ public sealed class StatusController : Controller
             CheckedAt = checkedAt,
             TotalDuration = report.TotalDuration,
             Components = components,
-            History = history
+            History = history,
+            Alerts = BuildAlerts(report.Status, report.TotalDuration, components, history)
         };
 
         return View(model);
@@ -83,5 +84,63 @@ public sealed class StatusController : Controller
         return status == HealthStatus.Healthy
             ? $"{name} operacional."
             : $"{name} requer atencao.";
+    }
+
+    private static IReadOnlyCollection<OperationalAlertViewModel> BuildAlerts(
+        HealthStatus overallStatus,
+        TimeSpan totalDuration,
+        IReadOnlyCollection<OperationalComponentViewModel> components,
+        IReadOnlyCollection<OperationalStatusHistoryItemViewModel> history)
+    {
+        var alerts = new List<OperationalAlertViewModel>();
+        var unhealthyComponents = components
+            .Where(component => !string.Equals(component.Status, HealthStatus.Healthy.ToString(), StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        if (overallStatus != HealthStatus.Healthy)
+        {
+            alerts.Add(new OperationalAlertViewModel(
+                "critical",
+                "Status geral degradado",
+                "Um ou mais componentes criticos estao fora do estado Healthy."));
+        }
+
+        foreach (var component in unhealthyComponents)
+        {
+            alerts.Add(new OperationalAlertViewModel(
+                "critical",
+                $"Componente {component.Name} requer atencao",
+                component.Description));
+        }
+
+        if (totalDuration.TotalMilliseconds > 1000)
+        {
+            alerts.Add(new OperationalAlertViewModel(
+                "warning",
+                "Health check lento",
+                $"A ultima checagem levou {totalDuration.TotalMilliseconds:N0} ms."));
+        }
+
+        var recentFailures = history
+            .Take(5)
+            .Count(item => !string.Equals(item.Status, HealthStatus.Healthy.ToString(), StringComparison.OrdinalIgnoreCase));
+
+        if (recentFailures >= 2)
+        {
+            alerts.Add(new OperationalAlertViewModel(
+                "warning",
+                "Instabilidade recorrente",
+                $"{recentFailures} das ultimas 5 checagens recentes nao ficaram Healthy."));
+        }
+
+        if (alerts.Count == 0)
+        {
+            alerts.Add(new OperationalAlertViewModel(
+                "info",
+                "Nenhum alerta ativo",
+                "Todos os componentes monitorados estao operacionais nesta checagem."));
+        }
+
+        return alerts;
     }
 }

@@ -4,7 +4,7 @@ Este documento orienta a evolucao do PortalAuth. Ele deve ser atualizado a cada 
 
 ## Fase 1 - Fundacao Tecnica
 
-Status: em execucao.
+Status: concluida.
 
 Objetivo: criar uma base .NET 8 compilavel, com camadas, Building Blocks iniciais, API, MVC Razor, health checks, logging, correlation ID, exception handling e documentacao.
 
@@ -23,7 +23,7 @@ Entregas:
 
 ## Fase 2 - Portal.Auth MVP
 
-Status: em execucao.
+Status: concluida.
 
 Objetivo: implementar autenticacao e autorizacao corporativa.
 
@@ -85,21 +85,29 @@ Entregas previstas:
 
 ## Fase 4 - Seguranca e Observabilidade
 
-Status: planejada.
+Status: concluida.
 
 Objetivo: elevar maturidade tecnica para uso corporativo.
 
 Entregas previstas:
 
-- Checklist OWASP.
+- [x] Checklist OWASP.
 - [x] Rate limiting.
 - [x] CSP gradual.
-- OpenTelemetry.
+- [x] OpenTelemetry.
 - [x] Health checks completos.
-- Dashboards e alertas.
+- [x] Dashboards e alertas.
 
 ## Fase 5 - Sistema Piloto
 
-Status: planejada.
+Status: concluida.
 
 Objetivo: validar a plataforma em um sistema real.
+
+Entregas previstas:
+
+- [x] Selecionar sistema piloto.
+- [x] Registrar sistema piloto no portal.
+- [x] Liberar acesso ao perfil administrador.
+- [x] Documentar fluxo de validacao.
+- [x] Validar integracao com dashboard, auditoria e observabilidade.

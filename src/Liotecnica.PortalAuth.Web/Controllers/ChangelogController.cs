@@ -14,6 +14,26 @@ public sealed class ChangelogController : Controller
             Entries =
             [
                 new(
+                    "0021",
+                    "Seguranca, observabilidade e sistema piloto",
+                    "30/05/2026",
+                    "O roadmap foi concluido com checklist OWASP, OpenTelemetry, alertas operacionais e um sistema piloto local.",
+                    [
+                        "OpenTelemetry configurado no Web e na API.",
+                        "Exportador OTLP opcional por configuracao.",
+                        "Tela de Status passou a exibir alertas operacionais.",
+                        "Criado checklist OWASP.",
+                        "Criada documentacao de observabilidade.",
+                        "Registrado sistema PortalAuth API Piloto no seed.",
+                        "Criada documentacao de validacao do piloto."
+                    ],
+                    [
+                        "Pacotes OpenTelemetry adicionados aos projetos Web e API.",
+                        "Configuracao `OpenTelemetry:OtlpEndpoint` adicionada.",
+                        "Criado modelo `OperationalAlertViewModel`.",
+                        "Seed de sistemas agora adiciona defaults ausentes por codigo."
+                    ]),
+                new(
                     "0020",
                     "UI Kit Razor",
                     "30/05/2026",

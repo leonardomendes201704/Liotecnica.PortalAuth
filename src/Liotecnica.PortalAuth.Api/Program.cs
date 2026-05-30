@@ -3,6 +3,8 @@ using Liotecnica.BuildingBlocks.Web.Extensions;
 using Liotecnica.PortalAuth.Application;
 using Liotecnica.PortalAuth.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,21 @@ builder.Services.AddPortalAuthApplication();
 builder.Services.AddPortalAuthInfrastructure(builder.Configuration);
 builder.Services.AddLiotecnicaWebBuildingBlocks();
 builder.Services.AddLiotecnicaHealthChecks();
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource.AddService("Liotecnica.PortalAuth.Api"))
+    .WithTracing(tracing =>
+    {
+        tracing
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation();
+
+        var otlpEndpoint = builder.Configuration["OpenTelemetry:OtlpEndpoint"];
+
+        if (!string.IsNullOrWhiteSpace(otlpEndpoint))
+        {
+            tracing.AddOtlpExporter(options => options.Endpoint = new Uri(otlpEndpoint));
+        }
+    });
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

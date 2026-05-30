@@ -68,18 +68,24 @@ public static class IdentitySeeder
 
     private static async Task SeedCorporateSystemsAsync(PortalAuthDbContext dbContext)
     {
-        if (await dbContext.CorporateSystems.AnyAsync())
+        var defaults = new[]
         {
-            return;
-        }
-
-        dbContext.CorporateSystems.AddRange(
             new CorporateSystem("RH", "RH", "Gestao de pessoas e folha de pagamento", "https://rh.local", "RH", false),
             new CorporateSystem("Financeiro", "FINANCEIRO", "Contas a pagar/receber, conciliacao e relatorios", "https://financeiro.local", "FI", true),
             new CorporateSystem("Compras", "COMPRAS", "Solicitacoes, cotacoes e contratos", "https://compras.local", "CP", true),
             new CorporateSystem("CRM", "CRM", "Gestao de clientes e oportunidades", "https://crm.local", "CR", false),
             new CorporateSystem("Documentos", "DOCUMENTOS", "Repositorio corporativo e arquivos", "https://documentos.local", "DC", false),
-            new CorporateSystem("Aprovacoes", "APROVACOES", "Fluxos, tarefas e autorizacoes", "https://aprovacoes.local", "AP", true));
+            new CorporateSystem("Aprovacoes", "APROVACOES", "Fluxos, tarefas e autorizacoes", "https://aprovacoes.local", "AP", true),
+            new CorporateSystem("PortalAuth API Piloto", "PORTALAUTH_API", "Sistema piloto para validar SSO, dashboard, permissoes e observabilidade.", "http://localhost:5057/swagger", "PI", false)
+        };
+
+        foreach (var system in defaults)
+        {
+            if (!await dbContext.CorporateSystems.AnyAsync(existing => existing.Code == system.Code))
+            {
+                dbContext.CorporateSystems.Add(system);
+            }
+        }
 
         await dbContext.SaveChangesAsync();
     }

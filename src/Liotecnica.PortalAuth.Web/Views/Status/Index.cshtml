@@ -38,6 +38,23 @@
     </table>
 </div>
 
+<section class="status-alerts" aria-label="Alertas operacionais">
+    @foreach (var alert in Model.Alerts)
+    {
+        var alertClass = alert.Severity switch
+        {
+            "critical" => "admin-alert--error",
+            "warning" => "admin-alert--warning",
+            _ => "admin-alert--info"
+        };
+
+        <article class="admin-alert @alertClass">
+            <strong>@alert.Title</strong>
+            <span>@alert.Description</span>
+        </article>
+    }
+</section>
+
 <section class="status-overview">
     <article class="admin-card status-card">
         <span class="portal-metric__icon @overallClass">ST</span>

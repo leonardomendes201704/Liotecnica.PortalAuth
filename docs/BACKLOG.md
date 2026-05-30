@@ -7,16 +7,16 @@ Backlog vivo do PortalAuth. Itens podem ser promovidos para o roadmap conforme p
 1. Criar automacao recorrente da limpeza de auditoria.
 2. Criar testes automatizados para "Meus Sistemas" com perfis diferentes.
 3. Criar exportacao CSV de usuarios e sistemas.
-4. Expandir status operacional com alertas ativos.
-5. Evoluir OpenTelemetry com traces e metricas exportaveis.
-6. Criar biblioteca de componentes Razor avancados a partir do UI Kit base.
+4. Evoluir OpenTelemetry com metricas exportaveis e dashboards externos.
+5. Criar biblioteca de componentes Razor avancados a partir do UI Kit base.
+6. Selecionar proximo sistema piloto real com dono de negocio.
 
 ## Melhorias Tecnicas
 
 - Adicionar FluentValidation.
 - Adicionar testes de arquitetura para dependencias entre camadas.
 - Refinar redaction para logs de payloads futuros.
-- Adicionar OpenTelemetry.
+- Adicionar auditoria de dependencias no pipeline.
 - Padronizar versionamento de APIs.
 - Evoluir pipeline CI para CD com deploy por ambiente.
 - Criar template de feature com Controller, Command/Query, Handler, Model, Service, Interface e Enum quando aplicavel.

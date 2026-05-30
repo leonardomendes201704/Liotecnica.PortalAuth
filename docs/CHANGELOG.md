@@ -2,6 +2,21 @@
 
 Historico detalhado das entregas do PortalAuth.
 
+## 0021 - Seguranca, observabilidade e sistema piloto
+
+Data: 30/05/2026
+
+Mudancas:
+
+- OpenTelemetry configurado nos projetos Web e API.
+- Exportador OTLP opcional via `OpenTelemetry:OtlpEndpoint`.
+- Tela de Status passou a exibir alertas operacionais.
+- Criado checklist OWASP em `docs/OWASP-CHECKLIST.md`.
+- Criada documentacao de observabilidade em `docs/OBSERVABILITY.md`.
+- Seed passou a registrar `PortalAuth API Piloto`.
+- Criada documentacao do piloto em `docs/PILOT.md`.
+- Roadmap atualizado com Fases 1, 2, 4 e 5 concluidas.
+
 ## 0020 - UI Kit Razor
 
 Data: 30/05/2026

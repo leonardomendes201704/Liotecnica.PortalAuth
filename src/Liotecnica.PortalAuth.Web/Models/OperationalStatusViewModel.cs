@@ -7,6 +7,7 @@ public sealed class OperationalStatusViewModel
     public TimeSpan TotalDuration { get; init; }
     public IReadOnlyCollection<OperationalComponentViewModel> Components { get; init; } = [];
     public IReadOnlyCollection<OperationalStatusHistoryItemViewModel> History { get; init; } = [];
+    public IReadOnlyCollection<OperationalAlertViewModel> Alerts { get; init; } = [];
 }
 
 public sealed record OperationalComponentViewModel(
@@ -21,3 +22,8 @@ public sealed record OperationalStatusHistoryItemViewModel(
     string Status,
     long TotalDurationMilliseconds,
     string ComponentsSummary);
+
+public sealed record OperationalAlertViewModel(
+    string Severity,
+    string Title,
+    string Description);
