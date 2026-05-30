@@ -64,6 +64,11 @@ public sealed class AccountController : Controller
                 user?.Id.ToString(),
                 user?.Email ?? model.Email);
 
+            if (user?.MustChangePassword == true)
+            {
+                return RedirectToAction(nameof(ChangePassword), new { forced = true });
+            }
+
             if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
             {
                 return Redirect(model.ReturnUrl);
@@ -83,6 +88,81 @@ public sealed class AccountController : Controller
         ModelState.AddModelError(string.Empty, "E-mail ou senha invalidos.");
 
         return View(model);
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Profile()
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user is null)
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
+        return View(new ProfileViewModel
+        {
+            DisplayName = user.DisplayName,
+            Email = user.Email ?? string.Empty,
+            Department = user.Department,
+            MustChangePassword = user.MustChangePassword
+        });
+    }
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult ChangePassword(bool forced = false)
+    {
+        ViewData["ForcedChange"] = forced;
+
+        return View(new ChangePasswordViewModel());
+    }
+
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user is null)
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
+        if (!ModelState.IsValid)
+        {
+            ViewData["ForcedChange"] = user.MustChangePassword;
+            return View(model);
+        }
+
+        var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+        if (!result.Succeeded)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            ViewData["ForcedChange"] = user.MustChangePassword;
+            return View(model);
+        }
+
+        user.MustChangePassword = false;
+        await _userManager.UpdateAsync(user);
+        await _signInManager.RefreshSignInAsync(user);
+
+        await _auditService.RecordAsync(
+            AuditAction.PasswordChanged,
+            nameof(ApplicationUser),
+            user.Id.ToString(),
+            "Senha alterada pelo proprio usuario.");
+
+        TempData["SuccessMessage"] = "Senha alterada com sucesso.";
+
+        return RedirectToAction(nameof(Profile));
     }
 
     [HttpPost]

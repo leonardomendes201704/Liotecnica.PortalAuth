@@ -3,6 +3,7 @@ param(
     [string] $HostName = "localhost",
     [int] $Port = 5432,
     [string] $AdminUser = "postgres",
+    [string] $AppUser = "portalauth_app",
     [string] $DatabaseName = "liotecnica_portalauth",
     [string] $ProjectPath = ".\src\Liotecnica.PortalAuth.Api\Liotecnica.PortalAuth.Api.csproj"
 )
@@ -22,6 +23,10 @@ if (-not $env:PORTALAUTH_POSTGRES_PASSWORD) {
     throw "Defina a variavel de ambiente PORTALAUTH_POSTGRES_PASSWORD com a senha do usuario PostgreSQL '$AdminUser'."
 }
 
+if (-not $env:PORTALAUTH_APP_POSTGRES_PASSWORD) {
+    throw "Defina a variavel de ambiente PORTALAUTH_APP_POSTGRES_PASSWORD com a senha do usuario dedicado '$AppUser'."
+}
+
 $env:PGPASSWORD = $env:PORTALAUTH_POSTGRES_PASSWORD
 
 & $pgIsReady -h $HostName -p $Port
@@ -35,15 +40,36 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 $databaseExistsValue = ($databaseExists | Out-String).Trim()
+$escapedAppPassword = $env:PORTALAUTH_APP_POSTGRES_PASSWORD.Replace("'", "''")
+$roleExists = & $psql -h $HostName -p $Port -U $AdminUser -d postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname = '$AppUser';"
+$roleExistsValue = ($roleExists | Out-String).Trim()
+
+if ($roleExistsValue -ne "1") {
+    & $psql -h $HostName -p $Port -U $AdminUser -d postgres -c "CREATE ROLE $AppUser WITH LOGIN PASSWORD '$escapedAppPassword';"
+    if ($LASTEXITCODE -ne 0) {
+        throw "Falha ao criar o usuario dedicado '$AppUser'."
+    }
+}
 
 if ($databaseExistsValue -ne "1") {
-    & $createdb -h $HostName -p $Port -U $AdminUser -E UTF8 $DatabaseName
+    & $createdb -h $HostName -p $Port -U $AdminUser -E UTF8 -O $AppUser $DatabaseName
     if ($LASTEXITCODE -ne 0) {
         throw "Falha ao criar o banco '$DatabaseName'."
     }
 }
+else {
+    & $psql -h $HostName -p $Port -U $AdminUser -d postgres -c "ALTER DATABASE $DatabaseName OWNER TO $AppUser;"
+    if ($LASTEXITCODE -ne 0) {
+        throw "Falha ao ajustar o owner do banco '$DatabaseName'."
+    }
+}
 
-$connectionString = "Host=$HostName;Port=$Port;Database=$DatabaseName;Username=$AdminUser;Password=$env:PORTALAUTH_POSTGRES_PASSWORD"
+& $psql -h $HostName -p $Port -U $AdminUser -d $DatabaseName -c "GRANT ALL PRIVILEGES ON DATABASE $DatabaseName TO $AppUser; GRANT ALL ON SCHEMA public TO $AppUser;"
+if ($LASTEXITCODE -ne 0) {
+    throw "Falha ao conceder permissoes para '$AppUser'."
+}
+
+$connectionString = "Host=$HostName;Port=$Port;Database=$DatabaseName;Username=$AppUser;Password=$env:PORTALAUTH_APP_POSTGRES_PASSWORD"
 
 dotnet user-secrets set "ConnectionStrings:PortalAuth" $connectionString --project $ProjectPath
 

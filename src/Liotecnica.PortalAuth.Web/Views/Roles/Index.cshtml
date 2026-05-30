@@ -1,4 +1,4 @@
-@model IReadOnlyCollection<Microsoft.AspNetCore.Identity.IdentityRole<Guid>>
+@model IReadOnlyCollection<Liotecnica.PortalAuth.Infrastructure.Identity.ApplicationRole>
 
 @{
     Layout = "_PortalLayout";
@@ -27,6 +27,7 @@
         <thead>
             <tr>
                 <th>Nome</th>
+                <th>Status</th>
                 <th>Id</th>
                 <th></th>
             </tr>
@@ -36,13 +37,28 @@
             {
                 <tr>
                     <td><strong>@role.Name</strong></td>
+                    <td>@(role.IsActive ? "Ativo" : "Inativo")</td>
                     <td>@role.Id</td>
                     <td>
                         <div class="admin-row-actions">
                             <a asp-action="Edit" asp-route-id="@role.Id">Editar</a>
+                            @if (role.IsActive)
+                            {
+                                <form asp-action="Deactivate" asp-route-id="@role.Id" method="post" class="admin-inline-form">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit">Desativar</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="Reactivate" asp-route-id="@role.Id" method="post" class="admin-inline-form">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit">Reativar</button>
+                                </form>
+                            }
                             <form asp-action="Delete" asp-route-id="@role.Id" method="post" class="admin-inline-form">
                                 @Html.AntiForgeryToken()
-                                <button type="submit">Remover</button>
+                                <button type="submit">Excluir</button>
                             </form>
                         </div>
                     </td>

@@ -1,0 +1,32 @@
+name: PortalAuth CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Restore packages
+        run: dotnet restore Liotecnica.PortalAuth.slnx
+
+      - name: Build
+        run: dotnet build Liotecnica.PortalAuth.slnx --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test Liotecnica.PortalAuth.slnx --configuration Release --no-build

@@ -6,4 +6,5 @@ public sealed class ApplicationUser : IdentityUser<Guid>
 {
     public string DisplayName { get; set; } = string.Empty;
     public string? Department { get; set; }
+    public bool MustChangePassword { get; set; }
 }

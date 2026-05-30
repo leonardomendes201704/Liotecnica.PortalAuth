@@ -30,13 +30,18 @@ Esta primeira entrega aplica apenas a fundacao de seguranca. O objetivo e garant
 - Reset de senha administrativo sem registro da senha temporaria em logs ou auditoria.
 - Acoes destrutivas administrativas executadas por POST com antiforgery.
 - Exclusao logica para sistemas e permissoes.
+- Troca obrigatoria de senha apos reset administrativo.
+- Alteracao de senha pelo proprio usuario.
+- Exclusao logica e desativacao de perfis com `ApplicationRole`.
+- Rate limiting global no Web.
+- CSP inicial com `default-src 'self'`.
+- Swagger habilitado apenas em desenvolvimento.
+- Usuario PostgreSQL dedicado para a aplicacao local.
 
 ## Ainda Nao Implementado
 
-- Rate limiting.
-- CSP gradual.
-- Redaction de dados sensiveis em logs.
-- Protecao de Swagger em producao.
+- Redaction automatica de payloads sensiveis em logs futuros.
+- OpenTelemetry com exportacao de traces e metricas.
 
 ## Swagger
 
@@ -51,10 +56,10 @@ PostgreSQL e o banco oficial da plataforma.
 Nao versionar senhas de banco. Para ambientes locais, usar User Secrets ou variaveis de ambiente quando houver senha:
 
 ```powershell
-dotnet user-secrets set "ConnectionStrings:PortalAuth" "Host=localhost;Port=5432;Database=liotecnica_portalauth;Username=postgres;Password=SENHA_LOCAL"
+dotnet user-secrets set "ConnectionStrings:PortalAuth" "Host=localhost;Port=5432;Database=liotecnica_portalauth;Username=portalauth_app;Password=SENHA_LOCAL"
 ```
 
-O setup local tambem aceita a senha via variavel `PORTALAUTH_POSTGRES_PASSWORD`, usada pelo script `scripts/Setup-LocalPostgres.ps1`.
+O setup local usa `PORTALAUTH_POSTGRES_PASSWORD` para o usuario administrativo e `PORTALAUTH_APP_POSTGRES_PASSWORD` para o usuario dedicado da aplicacao.
 
 ## Politica de Logs
 
@@ -82,4 +87,4 @@ A exportacao CSV da auditoria e limitada, auditada e aplica escaping nos campos 
 
 ## Proximo Passo de Seguranca
 
-Na fase Portal.Auth MVP, implementar testes automatizados de autorizacao, rate limiting e hardening gradual de seguranca.
+Na fase seguinte, evoluir redaction automatica de logs, OpenTelemetry e alertas ativos.

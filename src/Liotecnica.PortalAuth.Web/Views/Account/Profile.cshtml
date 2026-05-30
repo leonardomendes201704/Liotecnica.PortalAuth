@@ -1,0 +1,38 @@
+@model ProfileViewModel
+
+@{
+    ViewData["Title"] = "Meu Perfil";
+    Layout = "_PortalLayout";
+}
+
+<section class="admin-header">
+    <div>
+        <p class="admin-kicker">Conta</p>
+        <h1>Meu Perfil</h1>
+        <p>Consulte seus dados e gerencie sua senha de acesso ao PortalAuth.</p>
+    </div>
+    <a class="admin-button" asp-action="ChangePassword">Alterar senha</a>
+</section>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="admin-alert admin-alert--success">@successMessage</div>
+}
+
+@if (Model.MustChangePassword)
+{
+    <div class="admin-alert admin-alert--warning">
+        Sua senha foi redefinida administrativamente. Altere a senha para continuar usando o portal com seguranca.
+    </div>
+}
+
+<section class="admin-card">
+    <dl class="admin-details">
+        <dt>Nome</dt>
+        <dd>@Model.DisplayName</dd>
+        <dt>E-mail</dt>
+        <dd>@Model.Email</dd>
+        <dt>Departamento</dt>
+        <dd>@(string.IsNullOrWhiteSpace(Model.Department) ? "Nao informado" : Model.Department)</dd>
+    </dl>
+</section>

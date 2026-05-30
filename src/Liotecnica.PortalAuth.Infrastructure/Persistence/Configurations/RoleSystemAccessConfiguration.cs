@@ -1,5 +1,5 @@
 using Liotecnica.PortalAuth.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
+using Liotecnica.PortalAuth.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,7 +24,7 @@ public sealed class RoleSystemAccessConfiguration : IEntityTypeConfiguration<Rol
             .HasForeignKey(access => access.SystemId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne<IdentityRole<Guid>>()
+        builder.HasOne<ApplicationRole>()
             .WithMany()
             .HasForeignKey(access => access.RoleId)
             .OnDelete(DeleteBehavior.Cascade);

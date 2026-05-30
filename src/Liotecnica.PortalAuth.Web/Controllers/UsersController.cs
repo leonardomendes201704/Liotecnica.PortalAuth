@@ -15,12 +15,12 @@ namespace Liotecnica.PortalAuth.Web.Controllers;
 public sealed class UsersController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly IAuditService _auditService;
 
     public UsersController(
         UserManager<ApplicationUser> userManager,
-        RoleManager<IdentityRole<Guid>> roleManager,
+        RoleManager<ApplicationRole> roleManager,
         IAuditService auditService)
     {
         _userManager = userManager;
@@ -261,6 +261,9 @@ public sealed class UsersController : Controller
             return View(model);
         }
 
+        user.MustChangePassword = true;
+        await _userManager.UpdateAsync(user);
+
         await _auditService.RecordAsync(
             AuditAction.PasswordReset,
             nameof(ApplicationUser),
@@ -289,6 +292,7 @@ public sealed class UsersController : Controller
     private async Task<List<SelectListItem>> BuildRoleItemsAsync(IReadOnlyCollection<Guid> selectedRoleIds)
     {
         var roles = await _roleManager.Roles
+            .Where(role => role.IsActive && !role.IsDeleted)
             .OrderBy(role => role.Name)
             .ToListAsync();
 

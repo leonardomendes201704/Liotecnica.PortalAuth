@@ -6,6 +6,7 @@ public sealed class OperationalStatusViewModel
     public DateTime CheckedAt { get; init; } = DateTime.UtcNow;
     public TimeSpan TotalDuration { get; init; }
     public IReadOnlyCollection<OperationalComponentViewModel> Components { get; init; } = [];
+    public IReadOnlyCollection<OperationalStatusHistoryItemViewModel> History { get; init; } = [];
 }
 
 public sealed record OperationalComponentViewModel(
@@ -14,3 +15,9 @@ public sealed record OperationalComponentViewModel(
     string Description,
     string Duration,
     IReadOnlyCollection<string> Tags);
+
+public sealed record OperationalStatusHistoryItemViewModel(
+    DateTime CheckedAt,
+    string Status,
+    long TotalDurationMilliseconds,
+    string ComponentsSummary);

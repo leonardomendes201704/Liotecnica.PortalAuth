@@ -1,5 +1,6 @@
 using Liotecnica.PortalAuth.Domain.Entities;
 using Liotecnica.PortalAuth.Domain.Enums;
+using Liotecnica.PortalAuth.Infrastructure.Identity;
 using Liotecnica.PortalAuth.Infrastructure.Persistence;
 using Liotecnica.PortalAuth.Web.Models;
 using Liotecnica.PortalAuth.Web.Security;
@@ -15,12 +16,12 @@ namespace Liotecnica.PortalAuth.Web.Controllers;
 [Authorize(Policy = PermissionCodes.RoleManage)]
 public sealed class RolesController : Controller
 {
-    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly PortalAuthDbContext _dbContext;
     private readonly IAuditService _auditService;
 
     public RolesController(
-        RoleManager<IdentityRole<Guid>> roleManager,
+        RoleManager<ApplicationRole> roleManager,
         PortalAuthDbContext dbContext,
         IAuditService auditService)
     {
@@ -32,6 +33,7 @@ public sealed class RolesController : Controller
     public async Task<IActionResult> Index()
     {
         var roles = await _roleManager.Roles
+            .Where(role => !role.IsDeleted)
             .OrderBy(role => role.Name)
             .ToListAsync();
 
@@ -52,7 +54,7 @@ public sealed class RolesController : Controller
             return View(await BuildRoleFormAsync(model));
         }
 
-        var role = new IdentityRole<Guid>(model.Name);
+        var role = new ApplicationRole(model.Name);
         var result = await _roleManager.CreateAsync(role);
 
         if (!result.Succeeded)
@@ -65,7 +67,7 @@ public sealed class RolesController : Controller
         await SyncSystemsAsync(role.Id, model.SelectedSystemIds);
         await _auditService.RecordAsync(
             AuditAction.Created,
-            nameof(IdentityRole<Guid>),
+            nameof(ApplicationRole),
             role.Id.ToString(),
             $"Perfil criado: {role.Name}. Permissoes: {model.SelectedPermissionIds.Count}. Sistemas: {model.SelectedSystemIds.Count}.");
 
@@ -134,7 +136,7 @@ public sealed class RolesController : Controller
         await SyncSystemsAsync(role.Id, model.SelectedSystemIds);
         await _auditService.RecordAsync(
             AuditAction.Updated,
-            nameof(IdentityRole<Guid>),
+            nameof(ApplicationRole),
             role.Id.ToString(),
             $"Perfil atualizado: {role.Name}. Permissoes: {model.SelectedPermissionIds.Count}. Sistemas: {model.SelectedSystemIds.Count}.");
 
@@ -152,41 +154,87 @@ public sealed class RolesController : Controller
             return NotFound();
         }
 
-        var hasUsers = await _dbContext.UserRoles.AnyAsync(userRole => userRole.RoleId == id);
-
-        if (hasUsers)
-        {
-            TempData["ErrorMessage"] = $"Perfil {role.Name} possui usuarios vinculados e nao pode ser removido.";
-            return RedirectToAction(nameof(Index));
-        }
-
-        var permissions = await _dbContext.RolePermissions
-            .Where(rolePermission => rolePermission.RoleId == id)
-            .ToListAsync();
-        var systems = await _dbContext.RoleSystemAccesses
-            .Where(access => access.RoleId == id)
-            .ToListAsync();
-
-        _dbContext.RolePermissions.RemoveRange(permissions);
-        _dbContext.RoleSystemAccesses.RemoveRange(systems);
-        await _dbContext.SaveChangesAsync();
-
-        var result = await _roleManager.DeleteAsync(role);
+        role.MarkAsDeleted(User.Identity?.Name);
+        var result = await _roleManager.UpdateAsync(role);
 
         if (!result.Succeeded)
         {
             AddIdentityErrors(result);
-            TempData["ErrorMessage"] = $"Nao foi possivel remover o perfil {role.Name}.";
+            TempData["ErrorMessage"] = $"Nao foi possivel excluir logicamente o perfil {role.Name}.";
             return RedirectToAction(nameof(Index));
         }
 
         await _auditService.RecordAsync(
             AuditAction.Deleted,
-            nameof(IdentityRole<Guid>),
+            nameof(ApplicationRole),
             role.Id.ToString(),
-            $"Perfil removido sem usuarios vinculados: {role.Name}.");
+            $"Perfil excluido logicamente: {role.Name}.");
 
-        TempData["SuccessMessage"] = $"Perfil {role.Name} removido.";
+        TempData["SuccessMessage"] = $"Perfil {role.Name} excluido logicamente.";
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Deactivate(Guid id)
+    {
+        var role = await _roleManager.FindByIdAsync(id.ToString());
+
+        if (role is null)
+        {
+            return NotFound();
+        }
+
+        role.Deactivate(User.Identity?.Name);
+        var result = await _roleManager.UpdateAsync(role);
+
+        if (!result.Succeeded)
+        {
+            AddIdentityErrors(result);
+            TempData["ErrorMessage"] = $"Nao foi possivel desativar o perfil {role.Name}.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        await _auditService.RecordAsync(
+            AuditAction.Deactivated,
+            nameof(ApplicationRole),
+            role.Id.ToString(),
+            $"Perfil desativado: {role.Name}.");
+
+        TempData["SuccessMessage"] = $"Perfil {role.Name} desativado.";
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Reactivate(Guid id)
+    {
+        var role = await _roleManager.FindByIdAsync(id.ToString());
+
+        if (role is null)
+        {
+            return NotFound();
+        }
+
+        role.Reactivate(User.Identity?.Name);
+        var result = await _roleManager.UpdateAsync(role);
+
+        if (!result.Succeeded)
+        {
+            AddIdentityErrors(result);
+            TempData["ErrorMessage"] = $"Nao foi possivel reativar o perfil {role.Name}.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        await _auditService.RecordAsync(
+            AuditAction.Reactivated,
+            nameof(ApplicationRole),
+            role.Id.ToString(),
+            $"Perfil reativado: {role.Name}.");
+
+        TempData["SuccessMessage"] = $"Perfil {role.Name} reativado.";
 
         return RedirectToAction(nameof(Index));
     }

@@ -2,6 +2,24 @@
 
 Historico detalhado das entregas do PortalAuth.
 
+## 0019 - Hardening, perfil do usuario e prontidao para producao
+
+Data: 30/05/2026
+
+Mudancas:
+
+- Adicionado `ApplicationRole` com desativacao, reativacao e exclusao logica de perfis.
+- Reset administrativo agora marca o usuario com troca obrigatoria de senha.
+- Adicionadas telas `Meu Perfil` e `Alterar Senha`.
+- Adicionado enforcement para impedir navegacao enquanto a troca obrigatoria estiver pendente.
+- Adicionado rate limiting global no Web.
+- Adicionada politica CSP inicial nos headers de seguranca.
+- Tela de status operacional passou a registrar historico em banco.
+- Setup local passou a usar usuario PostgreSQL dedicado `portalauth_app`.
+- Adicionados testes automatizados para policies de permissao e regras de Identity.
+- Criado workflow CI do GitHub Actions.
+- Criado `docs/DEPLOYMENT.md` com variaveis, migrations, backup e validacao operacional.
+
 ## 0018 - Exportacao CSV da auditoria
 
 Data: 30/05/2026

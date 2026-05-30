@@ -3,6 +3,10 @@ using Liotecnica.PortalAuth.Application.Enums;
 using Liotecnica.PortalAuth.Application.Services;
 using Liotecnica.PortalAuth.Domain.Common;
 using Liotecnica.PortalAuth.Domain.Entities;
+using Liotecnica.PortalAuth.Infrastructure.Identity;
+using Liotecnica.PortalAuth.Web.Security;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 
 namespace Liotecnica.PortalAuth.UnitTests;
 
@@ -66,6 +70,54 @@ public class FoundationTests
         Assert.True(system.IsActive);
         Assert.Equal("PORTAL_AUTH", system.Code);
         Assert.False(system.RequiresMfa);
+    }
+
+    [Fact]
+    public async Task PermissionPolicyProvider_ShouldCreatePolicyForKnownPermission()
+    {
+        var provider = new PermissionPolicyProvider(Options.Create(new AuthorizationOptions()));
+
+        var policy = await provider.GetPolicyAsync(PermissionCodes.UserManage);
+
+        Assert.NotNull(policy);
+        Assert.Contains(policy.Requirements, requirement =>
+            requirement is PermissionRequirement permissionRequirement
+            && permissionRequirement.PermissionCode == PermissionCodes.UserManage);
+    }
+
+    [Fact]
+    public async Task PermissionPolicyProvider_ShouldRejectUnknownPermission()
+    {
+        var provider = new PermissionPolicyProvider(Options.Create(new AuthorizationOptions()));
+
+        var policy = await provider.GetPolicyAsync("Permissao.Inexistente");
+
+        Assert.Null(policy);
+    }
+
+    [Fact]
+    public void ApplicationRole_ShouldSupportLogicalDeactivation()
+    {
+        var role = new ApplicationRole("Operador");
+
+        role.Deactivate("tester");
+
+        Assert.False(role.IsActive);
+        Assert.False(role.IsDeleted);
+        Assert.Equal("tester", role.UpdatedBy);
+        Assert.NotNull(role.UpdatedAt);
+    }
+
+    [Fact]
+    public void ApplicationUser_ShouldAllowMandatoryPasswordChangeFlag()
+    {
+        var user = new ApplicationUser
+        {
+            Email = "usuario@liotecnica.com.br",
+            MustChangePassword = true
+        };
+
+        Assert.True(user.MustChangePassword);
     }
 
     private sealed class TestEntity : BaseEntity;

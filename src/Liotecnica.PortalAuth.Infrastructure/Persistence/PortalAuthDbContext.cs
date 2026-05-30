@@ -1,12 +1,11 @@
 using Liotecnica.PortalAuth.Infrastructure.Identity;
 using Liotecnica.PortalAuth.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Liotecnica.PortalAuth.Infrastructure.Persistence;
 
-public sealed class PortalAuthDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+public sealed class PortalAuthDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 {
     public PortalAuthDbContext(DbContextOptions<PortalAuthDbContext> options)
         : base(options)
@@ -19,6 +18,7 @@ public sealed class PortalAuthDbContext : IdentityDbContext<ApplicationUser, Ide
     public DbSet<RoleSystemAccess> RoleSystemAccesses => Set<RoleSystemAccess>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<AppSetting> AppSettings => Set<AppSetting>();
+    public DbSet<OperationalStatusSnapshot> OperationalStatusSnapshots => Set<OperationalStatusSnapshot>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

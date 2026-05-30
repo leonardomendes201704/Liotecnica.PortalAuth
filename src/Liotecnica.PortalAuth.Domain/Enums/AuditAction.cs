@@ -13,5 +13,7 @@ public enum AuditAction
     Deleted = 9,
     RetentionUpdated = 10,
     AuditPurged = 11,
-    AuditExported = 12
+    AuditExported = 12,
+    PasswordChanged = 13,
+    StatusSnapshotRecorded = 14
 }

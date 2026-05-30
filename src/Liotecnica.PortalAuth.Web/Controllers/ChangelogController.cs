@@ -14,6 +14,26 @@ public sealed class ChangelogController : Controller
             Entries =
             [
                 new(
+                    "0019",
+                    "Hardening, perfil do usuario e prontidao para producao",
+                    "30/05/2026",
+                    "O PortalAuth recebeu ajustes de seguranca, perfil do usuario, roles customizadas, historico operacional, CI e documentacao de deploy.",
+                    [
+                        "Reset administrativo passou a exigir troca obrigatoria de senha.",
+                        "Criadas telas Meu Perfil e Alterar Senha.",
+                        "Perfis agora usam role customizada com desativacao e exclusao logica.",
+                        "Adicionados rate limiting global e CSP inicial.",
+                        "Status operacional passou a registrar historico recente.",
+                        "Setup local usa usuario PostgreSQL dedicado.",
+                        "Adicionado workflow CI e documentacao de deploy."
+                    ],
+                    [
+                        "Criado `ApplicationRole` e flag `ApplicationUser.MustChangePassword`.",
+                        "Criada migration `AddHardeningProfileAndStatusHistory`.",
+                        "Criada entidade `OperationalStatusSnapshot`.",
+                        "Adicionados testes de policies de permissao e regras criticas de Identity."
+                    ]),
+                new(
                     "0018",
                     "Exportacao CSV da auditoria",
                     "30/05/2026",

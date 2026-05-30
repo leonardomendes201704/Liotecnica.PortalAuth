@@ -13,6 +13,31 @@
     </div>
 </div>
 
+<div class="admin-card">
+    <h2>Historico recente</h2>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Duracao</th>
+                <th>Componentes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.History)
+            {
+                <tr>
+                    <td>@item.CheckedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                    <td>@item.Status</td>
+                    <td>@item.TotalDurationMilliseconds.ToString("N0") ms</td>
+                    <td>@item.ComponentsSummary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 <section class="status-overview">
     <article class="admin-card status-card">
         <span class="portal-metric__icon @overallClass">ST</span>

@@ -27,9 +27,12 @@ public sealed class PermissionAuthorizationHandler : AuthorizationHandler<Permis
 
         var hasPermission = await (
             from userRole in _dbContext.UserRoles
+            join role in _dbContext.Roles on userRole.RoleId equals role.Id
             join rolePermission in _dbContext.RolePermissions on userRole.RoleId equals rolePermission.RoleId
             join permission in _dbContext.Permissions on rolePermission.PermissionId equals permission.Id
             where userRole.UserId == userId
+                  && role.IsActive
+                  && !role.IsDeleted
                   && permission.Code == requirement.PermissionCode
                   && permission.IsActive
                   && !permission.IsDeleted

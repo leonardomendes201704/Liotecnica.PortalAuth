@@ -40,7 +40,7 @@ Exemplo local sem senha versionada:
 ```json
 {
   "ConnectionStrings": {
-    "PortalAuth": "Host=localhost;Port=5432;Database=liotecnica_portalauth;Username=postgres"
+    "PortalAuth": "Host=localhost;Port=5432;Database=liotecnica_portalauth;Username=portalauth_app"
   }
 }
 ```
@@ -62,10 +62,11 @@ O servidor local responde em:
 localhost:5432
 ```
 
-Como o usuario `postgres` exige senha, a senha nao deve ser versionada. Para configurar o projeto localmente, defina a senha em uma variavel de ambiente apenas na sua maquina:
+Como o usuario `postgres` exige senha e deve ficar restrito a administracao, o setup local cria/usa um usuario dedicado `portalauth_app`. Defina as senhas em variaveis de ambiente apenas na sua maquina:
 
 ```powershell
 $env:PORTALAUTH_POSTGRES_PASSWORD = "SUA_SENHA_LOCAL"
+$env:PORTALAUTH_APP_POSTGRES_PASSWORD = "SENHA_DO_USUARIO_APP"
 ```
 
 Depois execute:
@@ -77,7 +78,9 @@ Depois execute:
 O script faz:
 
 - valida se o PostgreSQL local esta aceitando conexoes;
+- cria o usuario dedicado `portalauth_app` se ainda nao existir;
 - cria o banco `liotecnica_portalauth` se ainda nao existir;
+- define `portalauth_app` como owner do banco local;
 - grava `ConnectionStrings:PortalAuth` em User Secrets do projeto API;
 - restaura a ferramenta local `dotnet-ef`;
 - aplica as migrations no PostgreSQL.

@@ -16,7 +16,7 @@ public static class IdentitySeeder
     {
         using var scope = serviceProvider.CreateScope();
 
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var dbContext = scope.ServiceProvider.GetRequiredService<PortalAuthDbContext>();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
@@ -31,7 +31,7 @@ public static class IdentitySeeder
 
         if (adminRole is null)
         {
-            adminRole = new IdentityRole<Guid>(AdminRole);
+            adminRole = new ApplicationRole(AdminRole);
             await roleManager.CreateAsync(adminRole);
         }
 

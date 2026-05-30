@@ -33,9 +33,12 @@ public sealed class DashboardController : Controller
 
         var systems = await (
             from userRole in _dbContext.UserRoles
+            join role in _dbContext.Roles on userRole.RoleId equals role.Id
             join access in _dbContext.RoleSystemAccesses on userRole.RoleId equals access.RoleId
             join system in _dbContext.CorporateSystems on access.SystemId equals system.Id
             where userRole.UserId == userId
+                  && role.IsActive
+                  && !role.IsDeleted
                   && system.IsActive
                   && !system.IsDeleted
             select system)

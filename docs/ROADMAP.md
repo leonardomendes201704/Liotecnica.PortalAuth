@@ -59,10 +59,18 @@ Entregas previstas:
 - [x] Filtros avancados na auditoria.
 - [x] Retencao configuravel de logs de auditoria.
 - [x] Exportacao CSV da auditoria.
+- [x] Troca obrigatoria de senha apos reset administrativo.
+- [x] Tela Meu Perfil e alteracao de senha pelo usuario.
+- [x] Desativacao logica de perfis com role customizada.
+- [x] Testes automatizados de policies de autorizacao.
+- [x] Usuario PostgreSQL dedicado no setup local.
+- [x] Hardening inicial com rate limiting e CSP.
+- [x] Historico basico de status operacional.
+- [x] Pipeline CI e documentacao de deploy.
 
 ## Fase 3 - UI Kit Razor
 
-Status: planejada.
+Status: iniciada.
 
 Objetivo: criar identidade visual e componentes Razor reutilizaveis.
 
@@ -84,10 +92,10 @@ Objetivo: elevar maturidade tecnica para uso corporativo.
 Entregas previstas:
 
 - Checklist OWASP.
-- Rate limiting.
-- CSP gradual.
+- [x] Rate limiting.
+- [x] CSP gradual.
 - OpenTelemetry.
-- Health checks completos.
+- [x] Health checks completos.
 - Dashboards e alertas.
 
 ## Fase 5 - Sistema Piloto

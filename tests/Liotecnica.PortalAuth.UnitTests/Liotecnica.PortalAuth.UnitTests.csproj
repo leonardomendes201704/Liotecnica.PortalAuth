@@ -24,6 +24,8 @@
     <ProjectReference Include="..\..\src\Liotecnica.PortalAuth.Domain\Liotecnica.PortalAuth.Domain.csproj" />
     <ProjectReference Include="..\..\src\Liotecnica.BuildingBlocks.Api\Liotecnica.BuildingBlocks.Api.csproj" />
     <ProjectReference Include="..\..\src\Liotecnica.PortalAuth.Application\Liotecnica.PortalAuth.Application.csproj" />
+    <ProjectReference Include="..\..\src\Liotecnica.PortalAuth.Infrastructure\Liotecnica.PortalAuth.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Liotecnica.PortalAuth.Web\Liotecnica.PortalAuth.Web.csproj" />
   </ItemGroup>
 
 </Project>
