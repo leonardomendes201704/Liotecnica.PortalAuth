@@ -1,0 +1,183 @@
+@model DashboardViewModel
+@using Liotecnica.PortalAuth.Web.Security
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService
+
+@{
+    ViewData["Title"] = "Tela Inicial";
+    ViewData["FullBleed"] = true;
+    ViewData["BodyClass"] = "portal-page";
+    var canViewSystems = (await AuthorizationService.AuthorizeAsync(User, null, PermissionCodes.SystemView)).Succeeded;
+    var canManagePermissions = (await AuthorizationService.AuthorizeAsync(User, null, PermissionCodes.PermissionManage)).Succeeded;
+    var canManageRoles = (await AuthorizationService.AuthorizeAsync(User, null, PermissionCodes.RoleManage)).Succeeded;
+    var canManageUsers = (await AuthorizationService.AuthorizeAsync(User, null, PermissionCodes.UserManage)).Succeeded;
+    var canViewAudit = (await AuthorizationService.AuthorizeAsync(User, null, PermissionCodes.AuditView)).Succeeded;
+}
+
+<div class="portal-shell">
+    <aside class="portal-sidebar" aria-label="Menu principal">
+        <div class="portal-brand">
+            <span class="portal-brand__symbol">L</span>
+            <span>Portal Corporativo</span>
+        </div>
+
+        <nav class="portal-nav">
+            <a class="portal-nav__item active" asp-controller="Dashboard" asp-action="Index">
+                <span>IN</span>
+                Tela Inicial
+            </a>
+            <a class="portal-nav__item" asp-controller="Changelog" asp-action="Index">
+                <span>CL</span>
+                Changelog
+            </a>
+            <a class="portal-nav__item" asp-controller="Status" asp-action="Index">
+                <span>ST</span>
+                Status
+            </a>
+            @if (canViewSystems)
+            {
+                <a class="portal-nav__item" asp-controller="Systems" asp-action="Index">
+                    <span>SI</span>
+                    Sistemas
+                </a>
+            }
+            @if (canManagePermissions)
+            {
+                <a class="portal-nav__item" asp-controller="Permissions" asp-action="Index">
+                    <span>PE</span>
+                    Permissoes
+                </a>
+            }
+            @if (canManageRoles)
+            {
+                <a class="portal-nav__item" asp-controller="Roles" asp-action="Index">
+                    <span>PF</span>
+                    Perfis
+                </a>
+            }
+            @if (canManageUsers)
+            {
+                <a class="portal-nav__item" asp-controller="Users" asp-action="Index">
+                    <span>US</span>
+                    Usuarios
+                </a>
+            }
+            @if (canViewAudit)
+            {
+                <a class="portal-nav__item" asp-controller="Audit" asp-action="Index">
+                    <span>AU</span>
+                    Auditoria
+                </a>
+            }
+        </nav>
+
+        <button class="portal-collapse" type="button">Recolher menu</button>
+    </aside>
+
+    <main class="portal-main">
+        <header class="portal-topbar">
+            <label class="portal-search">
+                <span>Buscar</span>
+                <input type="search" placeholder="Buscar sistemas, documentos, pessoas..." />
+            </label>
+
+            <div class="portal-userbar">
+                <button class="portal-icon-button" type="button" aria-label="Notificacoes">3</button>
+                <button class="portal-icon-button" type="button" aria-label="Ajuda">?</button>
+                <div class="portal-user">
+                    <span class="portal-avatar">@Model.DisplayName[..1]</span>
+                    <div>
+                        <strong>@Model.DisplayName</strong>
+                        <small>@Model.Department</small>
+                    </div>
+                </div>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="portal-logout" type="submit">Sair</button>
+                </form>
+            </div>
+        </header>
+
+        <section class="portal-content">
+            <div class="portal-title-row">
+                <div>
+                    <h1>Tela Inicial</h1>
+                    <p>Bem-vindo, @Model.DisplayName. Acesse os principais sistemas e informacoes da empresa.</p>
+                </div>
+                <a class="portal-status" asp-controller="Status" asp-action="Index">
+                    <span></span>
+                    @Model.Systems.Count sistemas operacionais
+                    <strong>Ver status</strong>
+                </a>
+            </div>
+
+            <section class="portal-metrics" aria-label="Resumo">
+                <article class="portal-metric">
+                    <span class="portal-metric__icon green">ON</span>
+                    <div>
+                        <strong>Sistemas online</strong>
+                        <p><span>@Model.Systems.Count</span> ativos</p>
+                    </div>
+                </article>
+                <article class="portal-metric">
+                    <span class="portal-metric__icon orange">PD</span>
+                    <div>
+                        <strong>Pendencias</strong>
+                        <p><span>8</span> <a href="#">Ver minhas pendencias</a></p>
+                    </div>
+                </article>
+                <article class="portal-metric">
+                    <span class="portal-metric__icon blue">CM</span>
+                    <div>
+                        <strong>Novos comunicados</strong>
+                        <p><span>5</span> <a href="#">Ver comunicados</a></p>
+                    </div>
+                </article>
+            </section>
+
+            <section class="portal-section">
+                <h2>Meus Sistemas</h2>
+                @if (Model.Systems.Any())
+                {
+                    <div class="portal-systems">
+                        @foreach (var system in Model.Systems)
+                        {
+                            <article class="portal-system-card">
+                                <span class="portal-system-card__icon @system.Accent">@system.Icon</span>
+                                <div>
+                                    <h3>@system.Name</h3>
+                                    <p>@system.Description</p>
+                                    <a href="@system.BaseUrl" target="_blank" rel="noopener noreferrer">Acessar</a>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="admin-card">
+                        <p>Nenhum sistema foi liberado para o seu perfil. Solicite acesso ao administrador.</p>
+                    </div>
+                }
+            </section>
+
+            <section class="portal-notices">
+                <div class="portal-notices__header">
+                    <h2>Avisos</h2>
+                    <a href="#">Ver todos os avisos</a>
+                </div>
+                <div class="portal-notice-list">
+                    @foreach (var notice in Model.Notices)
+                    {
+                        <article class="portal-notice">
+                            <span></span>
+                            <div>
+                                <strong>@notice.Title</strong>
+                                <p>@notice.Date</p>
+                            </div>
+                        </article>
+                    }
+                </div>
+            </section>
+        </section>
+    </main>
+</div>

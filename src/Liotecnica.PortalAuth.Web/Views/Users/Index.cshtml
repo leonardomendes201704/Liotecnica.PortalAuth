@@ -1,0 +1,69 @@
+@model IReadOnlyCollection<Liotecnica.PortalAuth.Infrastructure.Identity.ApplicationUser>
+
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Usuarios";
+}
+
+<div class="admin-header">
+    <div>
+        <h1>Usuarios</h1>
+        <p>Gerencie usuarios e seus perfis de acesso.</p>
+    </div>
+    <a class="admin-primary-action" asp-action="Create">Novo usuario</a>
+</div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="admin-alert admin-alert--success">@successMessage</div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="admin-alert admin-alert--error">@errorMessage</div>
+}
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Departamento</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                var locked = user.LockoutEnd.HasValue && user.LockoutEnd > DateTimeOffset.UtcNow;
+                <tr>
+                    <td><strong>@user.DisplayName</strong></td>
+                    <td>@user.Email</td>
+                    <td>@user.Department</td>
+                    <td>@(locked ? "Bloqueado" : "Ativo")</td>
+                    <td>
+                        <div class="admin-row-actions">
+                            <a asp-action="Edit" asp-route-id="@user.Id">Editar</a>
+                            <a asp-action="ResetPassword" asp-route-id="@user.Id">Redefinir senha</a>
+                            @if (locked)
+                            {
+                                <form asp-action="Reactivate" asp-route-id="@user.Id" method="post" class="admin-inline-form">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit">Reativar</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="Deactivate" asp-route-id="@user.Id" method="post" class="admin-inline-form">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit">Bloquear</button>
+                                </form>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,15 @@
+@model CorporateSystemFormViewModel
+
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Novo Sistema";
+}
+
+<div class="admin-header">
+    <div>
+        <h1>Novo Sistema</h1>
+        <p>Cadastre um sistema para aparecer no catalogo corporativo.</p>
+    </div>
+</div>
+
+<partial name="_SystemForm" model="Model" />

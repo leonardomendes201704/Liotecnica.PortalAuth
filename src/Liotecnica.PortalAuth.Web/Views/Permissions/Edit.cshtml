@@ -1,0 +1,15 @@
+@model PermissionFormViewModel
+
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Editar Permissao";
+}
+
+<div class="admin-header">
+    <div>
+        <h1>Editar Permissao</h1>
+        <p>Atualize uma permissao granular.</p>
+    </div>
+</div>
+
+<partial name="_PermissionForm" model="Model" />

@@ -1,0 +1,66 @@
+@model ChangelogViewModel
+
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Changelog";
+}
+
+<div class="admin-header">
+    <div>
+        <h1>Changelog</h1>
+        <p>Historico detalhado das entregas, decisoes tecnicas e mudancas funcionais do PortalAuth.</p>
+    </div>
+</div>
+
+<div class="changelog-summary">
+    <article class="admin-card changelog-summary__card">
+        <strong>@Model.Entries.Count</strong>
+        <span>entregas registradas</span>
+    </article>
+    <article class="admin-card changelog-summary__card">
+        <strong>@Model.Entries.First().Version</strong>
+        <span>ultima entrega</span>
+    </article>
+    <article class="admin-card changelog-summary__card">
+        <strong>PortalAuth</strong>
+        <span>historico do MVP</span>
+    </article>
+</div>
+
+<div class="changelog-timeline">
+    @foreach (var entry in Model.Entries)
+    {
+        <article class="admin-card changelog-entry">
+            <header class="changelog-entry__header">
+                <div>
+                    <span class="changelog-entry__version">Entrega @entry.Version</span>
+                    <h2>@entry.Title</h2>
+                    <p>@entry.Summary</p>
+                </div>
+                <time datetime="@entry.Date">@entry.Date</time>
+            </header>
+
+            <div class="changelog-entry__grid">
+                <section>
+                    <h3>Mudancas entregues</h3>
+                    <ul>
+                        @foreach (var change in entry.Changes)
+                        {
+                            <li>@change</li>
+                        }
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Notas tecnicas</h3>
+                    <ul>
+                        @foreach (var note in entry.TechnicalNotes)
+                        {
+                            <li>@note</li>
+                        }
+                    </ul>
+                </section>
+            </div>
+        </article>
+    }
+</div>

@@ -1,0 +1,42 @@
+@model RoleFormViewModel
+
+<form method="post" class="admin-card admin-form">
+    @Html.AntiForgeryToken()
+    <input asp-for="Id" type="hidden" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="admin-form-grid">
+        <label class="wide">
+            Nome do perfil
+            <input asp-for="Name" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </label>
+    </div>
+
+    <h2 class="admin-subtitle">Permissoes</h2>
+    <div class="admin-check-list">
+        @foreach (var permission in Model.Permissions)
+        {
+            <label>
+                <input type="checkbox" name="SelectedPermissionIds" value="@permission.Value" checked="@permission.Selected" />
+                @permission.Text
+            </label>
+        }
+    </div>
+
+    <h2 class="admin-subtitle">Sistemas acessiveis</h2>
+    <div class="admin-check-list">
+        @foreach (var system in Model.Systems)
+        {
+            <label>
+                <input type="checkbox" name="SelectedSystemIds" value="@system.Value" checked="@system.Selected" />
+                @system.Text
+            </label>
+        }
+    </div>
+
+    <div class="admin-actions">
+        <a asp-action="Index">Cancelar</a>
+        <button type="submit">Salvar</button>
+    </div>
+</form>

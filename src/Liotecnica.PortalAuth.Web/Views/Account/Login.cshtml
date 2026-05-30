@@ -1,0 +1,116 @@
+@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Entrar";
+    ViewData["FullBleed"] = true;
+    ViewData["BodyClass"] = "login-page";
+}
+
+<section class="login-shell" aria-label="Tela de login">
+    <div class="login-hero" aria-hidden="true">
+        <div class="brand-mark brand-mark--hero">
+            <span class="brand-symbol">L</span>
+            <span>Liotecnica<strong>One</strong></span>
+        </div>
+
+        <div class="login-hero__content">
+            <p class="login-eyebrow">Portal corporativo</p>
+            <h1>Produtividade com <span>governanca.</span></h1>
+            <div class="login-title-rule"></div>
+            <p class="login-hero__lead">
+                Uma plataforma integrada para acesso seguro aos sistemas internos,
+                colaboracao e tomada de decisao com conformidade.
+            </p>
+
+            <div class="login-benefits">
+                <article class="login-benefit">
+                    <span class="login-benefit__icon">S</span>
+                    <div>
+                        <strong>Seguranca enterprise</strong>
+                        <p>Controles de acesso e protecao dos dados corporativos.</p>
+                    </div>
+                </article>
+                <article class="login-benefit">
+                    <span class="login-benefit__icon">G</span>
+                    <div>
+                        <strong>Governanca e conformidade</strong>
+                        <p>Processos alinhados aos padroes tecnicos da empresa.</p>
+                    </div>
+                </article>
+                <article class="login-benefit">
+                    <span class="login-benefit__icon">P</span>
+                    <div>
+                        <strong>Produtividade que escala</strong>
+                        <p>Um ponto unico para iniciar sistemas internos com consistencia.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-panel">
+        <div class="login-card">
+            <div class="brand-mark brand-mark--card">
+                <span class="brand-symbol">L</span>
+                <span>Liotecnica<strong>One</strong></span>
+            </div>
+
+            <form asp-action="Login" asp-controller="Account" method="post" class="login-form" novalidate>
+                @Html.AntiForgeryToken()
+                <input asp-for="ReturnUrl" type="hidden" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger login-validation" role="alert"></div>
+
+                <div class="login-field">
+                    <label asp-for="Email"></label>
+                    <div class="login-input">
+                        <span aria-hidden="true">@@</span>
+                        <input asp-for="Email" autocomplete="username" placeholder="seu.nome@empresa.com.br" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="login-field">
+                    <label asp-for="Password"></label>
+                    <div class="login-input">
+                        <span aria-hidden="true">*</span>
+                        <input asp-for="Password" autocomplete="current-password" placeholder="Digite sua senha" />
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="login-options">
+                    <label class="login-check">
+                        <input asp-for="RememberMe" />
+                        <span>Lembrar-me</span>
+                    </label>
+                    <a href="#" aria-label="Recuperar senha">Esqueci minha senha</a>
+                </div>
+
+                <button type="submit" class="login-submit">Entrar</button>
+
+                <div class="login-separator">
+                    <span>ou</span>
+                </div>
+
+                <button type="button" class="login-sso">
+                    <span aria-hidden="true">S</span>
+                    Entrar com SSO
+                </button>
+            </form>
+        </div>
+
+        <footer class="login-footer">
+            <p>© 2026 Liotecnica. Todos os direitos reservados.</p>
+            <nav aria-label="Links legais">
+                <a href="#">Politica de Privacidade</a>
+                <a href="#">Termos de Uso</a>
+                <a href="#">Suporte</a>
+            </nav>
+        </footer>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

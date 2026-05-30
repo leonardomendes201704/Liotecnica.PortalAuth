@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Liotecnica.BuildingBlocks.Api/Liotecnica.BuildingBlocks.Api.csproj" />
+    <Project Path="src/Liotecnica.BuildingBlocks.Logging/Liotecnica.BuildingBlocks.Logging.csproj" />
+    <Project Path="src/Liotecnica.BuildingBlocks.Observability/Liotecnica.BuildingBlocks.Observability.csproj" />
+    <Project Path="src/Liotecnica.BuildingBlocks.Security/Liotecnica.BuildingBlocks.Security.csproj" />
+    <Project Path="src/Liotecnica.BuildingBlocks.Web/Liotecnica.BuildingBlocks.Web.csproj" />
+    <Project Path="src/Liotecnica.PortalAuth.Api/Liotecnica.PortalAuth.Api.csproj" />
+    <Project Path="src/Liotecnica.PortalAuth.Application/Liotecnica.PortalAuth.Application.csproj" />
+    <Project Path="src/Liotecnica.PortalAuth.Domain/Liotecnica.PortalAuth.Domain.csproj" />
+    <Project Path="src/Liotecnica.PortalAuth.Infrastructure/Liotecnica.PortalAuth.Infrastructure.csproj" />
+    <Project Path="src/Liotecnica.PortalAuth.Web/Liotecnica.PortalAuth.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Liotecnica.PortalAuth.UnitTests/Liotecnica.PortalAuth.UnitTests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,56 @@
+@model UserCreateViewModel
+
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Novo Usuario";
+}
+
+<div class="admin-header">
+    <div>
+        <h1>Novo Usuario</h1>
+        <p>Crie um usuario e vincule seus perfis.</p>
+    </div>
+</div>
+
+<form method="post" class="admin-card admin-form">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="admin-form-grid">
+        <label>
+            Nome
+            <input asp-for="DisplayName" />
+            <span asp-validation-for="DisplayName" class="text-danger"></span>
+        </label>
+        <label>
+            E-mail
+            <input asp-for="Email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </label>
+        <label>
+            Departamento
+            <input asp-for="Department" />
+            <span asp-validation-for="Department" class="text-danger"></span>
+        </label>
+        <label>
+            Senha inicial
+            <input asp-for="Password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </label>
+    </div>
+
+    <h2 class="admin-subtitle">Perfis</h2>
+    <div class="admin-check-list">
+        @foreach (var role in Model.Roles)
+        {
+            <label>
+                <input type="checkbox" name="SelectedRoleIds" value="@role.Value" checked="@role.Selected" />
+                @role.Text
+            </label>
+        }
+    </div>
+
+    <div class="admin-actions">
+        <a asp-action="Index">Cancelar</a>
+        <button type="submit">Salvar</button>
+    </div>
+</form>

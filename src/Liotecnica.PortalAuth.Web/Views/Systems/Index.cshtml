@@ -1,0 +1,69 @@
+@model IReadOnlyCollection<Liotecnica.PortalAuth.Domain.Entities.CorporateSystem>
+@using Liotecnica.PortalAuth.Web.Security
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService
+
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Sistemas";
+    var canCreate = (await AuthorizationService.AuthorizeAsync(User, null, PermissionCodes.SystemCreate)).Succeeded;
+    var canEdit = (await AuthorizationService.AuthorizeAsync(User, null, PermissionCodes.SystemEdit)).Succeeded;
+}
+
+<div class="admin-header">
+    <div>
+        <h1>Sistemas Corporativos</h1>
+        <p>Gerencie os sistemas disponiveis no portal.</p>
+    </div>
+    @if (canCreate)
+    {
+        <a class="admin-primary-action" asp-action="Create">Novo sistema</a>
+    }
+</div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="admin-alert admin-alert--success">@successMessage</div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="admin-alert admin-alert--error">@errorMessage</div>
+}
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Codigo</th>
+                <th>URL</th>
+                <th>Status</th>
+                <th>MFA</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var system in Model)
+            {
+                <tr>
+                    <td><strong>@system.Name</strong><span>@system.Description</span></td>
+                    <td>@system.Code</td>
+                    <td>@system.BaseUrl</td>
+                    <td>@(system.IsActive ? "Ativo" : "Inativo")</td>
+                    <td>@(system.RequiresMfa ? "Sim" : "Nao")</td>
+                    <td>
+                        @if (canEdit)
+                        {
+                            <div class="admin-row-actions">
+                                <a asp-action="Edit" asp-route-id="@system.Id">Editar</a>
+                                <form asp-action="Delete" asp-route-id="@system.Id" method="post" class="admin-inline-form">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit">Excluir</button>
+                                </form>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,15 @@
+@model RoleFormViewModel
+
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Novo Perfil";
+}
+
+<div class="admin-header">
+    <div>
+        <h1>Novo Perfil</h1>
+        <p>Crie um perfil de acesso e selecione permissoes.</p>
+    </div>
+</div>
+
+<partial name="_RoleForm" model="Model" />

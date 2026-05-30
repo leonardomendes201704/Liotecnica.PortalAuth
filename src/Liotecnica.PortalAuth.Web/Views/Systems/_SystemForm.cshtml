@@ -1,0 +1,48 @@
+@model CorporateSystemFormViewModel
+
+<form method="post" class="admin-card admin-form">
+    @Html.AntiForgeryToken()
+    <input asp-for="Id" type="hidden" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="admin-form-grid">
+        <label>
+            Nome
+            <input asp-for="Name" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </label>
+        <label>
+            Codigo
+            <input asp-for="Code" />
+            <span asp-validation-for="Code" class="text-danger"></span>
+        </label>
+        <label class="wide">
+            Descricao
+            <textarea asp-for="Description"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </label>
+        <label class="wide">
+            URL base
+            <input asp-for="BaseUrl" />
+            <span asp-validation-for="BaseUrl" class="text-danger"></span>
+        </label>
+        <label>
+            Icone
+            <input asp-for="Icon" />
+            <span asp-validation-for="Icon" class="text-danger"></span>
+        </label>
+        <label class="admin-check">
+            <input asp-for="RequiresMfa" />
+            Exige MFA
+        </label>
+        <label class="admin-check">
+            <input asp-for="IsActive" />
+            Ativo
+        </label>
+    </div>
+
+    <div class="admin-actions">
+        <a asp-action="Index">Cancelar</a>
+        <button type="submit">Salvar</button>
+    </div>
+</form>

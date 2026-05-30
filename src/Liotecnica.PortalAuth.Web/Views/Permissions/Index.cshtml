@@ -1,0 +1,59 @@
+@model IReadOnlyCollection<Liotecnica.PortalAuth.Domain.Entities.Permission>
+
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Permissoes";
+}
+
+<div class="admin-header">
+    <div>
+        <h1>Permissoes</h1>
+        <p>Gerencie permissoes granulares usadas em policies e perfis.</p>
+    </div>
+    <a class="admin-primary-action" asp-action="Create">Nova permissao</a>
+</div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="admin-alert admin-alert--success">@successMessage</div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="admin-alert admin-alert--error">@errorMessage</div>
+}
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Modulo</th>
+                <th>Descricao</th>
+                <th>Critica</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var permission in Model)
+            {
+                <tr>
+                    <td><strong>@permission.Code</strong></td>
+                    <td>@permission.Module</td>
+                    <td>@permission.Description</td>
+                    <td>@(permission.IsCritical ? "Sim" : "Nao")</td>
+                    <td>@(permission.IsActive ? "Ativa" : "Inativa")</td>
+                    <td>
+                        <div class="admin-row-actions">
+                            <a asp-action="Edit" asp-route-id="@permission.Id">Editar</a>
+                            <form asp-action="Delete" asp-route-id="@permission.Id" method="post" class="admin-inline-form">
+                                @Html.AntiForgeryToken()
+                                <button type="submit">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

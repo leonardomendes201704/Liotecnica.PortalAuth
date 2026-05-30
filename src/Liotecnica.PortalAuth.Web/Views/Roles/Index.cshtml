@@ -1,0 +1,53 @@
+@model IReadOnlyCollection<Microsoft.AspNetCore.Identity.IdentityRole<Guid>>
+
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Perfis";
+}
+
+<div class="admin-header">
+    <div>
+        <h1>Perfis</h1>
+        <p>Gerencie perfis e vincule permissoes granulares.</p>
+    </div>
+    <a class="admin-primary-action" asp-action="Create">Novo perfil</a>
+</div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="admin-alert admin-alert--success">@successMessage</div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="admin-alert admin-alert--error">@errorMessage</div>
+}
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Id</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var role in Model)
+            {
+                <tr>
+                    <td><strong>@role.Name</strong></td>
+                    <td>@role.Id</td>
+                    <td>
+                        <div class="admin-row-actions">
+                            <a asp-action="Edit" asp-route-id="@role.Id">Editar</a>
+                            <form asp-action="Delete" asp-route-id="@role.Id" method="post" class="admin-inline-form">
+                                @Html.AntiForgeryToken()
+                                <button type="submit">Remover</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

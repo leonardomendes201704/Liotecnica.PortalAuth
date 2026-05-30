@@ -1,0 +1,66 @@
+@model OperationalStatusViewModel
+
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Status Operacional";
+    var overallClass = Model.OverallStatus == "Healthy" ? "green" : "orange";
+}
+
+<div class="admin-header">
+    <div>
+        <h1>Status Operacional</h1>
+        <p>Monitore a saude da aplicacao e das dependencias criticas do PortalAuth.</p>
+    </div>
+</div>
+
+<section class="status-overview">
+    <article class="admin-card status-card">
+        <span class="portal-metric__icon @overallClass">ST</span>
+        <div>
+            <strong>Status geral</strong>
+            <p>@Model.OverallStatus</p>
+        </div>
+    </article>
+    <article class="admin-card status-card">
+        <span class="portal-metric__icon blue">TM</span>
+        <div>
+            <strong>Duracao total</strong>
+            <p>@Model.TotalDuration.TotalMilliseconds.ToString("N0") ms</p>
+        </div>
+    </article>
+    <article class="admin-card status-card">
+        <span class="portal-metric__icon purple">UTC</span>
+        <div>
+            <strong>Ultima checagem</strong>
+            <p>@Model.CheckedAt.ToString("dd/MM/yyyy HH:mm:ss")</p>
+        </div>
+    </article>
+</section>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Componente</th>
+                <th>Status</th>
+                <th>Descricao</th>
+                <th>Duracao</th>
+                <th>Tags</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var component in Model.Components)
+            {
+                var statusClass = component.Status == "Healthy" ? "status-badge--healthy" : "status-badge--unhealthy";
+
+                <tr>
+                    <td><strong>@component.Name</strong></td>
+                    <td><span class="status-badge @statusClass">@component.Status</span></td>
+                    <td>@component.Description</td>
+                    <td>@component.Duration</td>
+                    <td>@string.Join(", ", component.Tags)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

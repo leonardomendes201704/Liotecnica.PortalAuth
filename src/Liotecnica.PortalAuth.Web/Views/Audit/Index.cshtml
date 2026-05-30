@@ -1,0 +1,210 @@
+@model AuditIndexViewModel
+
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Auditoria";
+}
+
+<div class="admin-header">
+    <div>
+        <h1>Auditoria</h1>
+        <p>Consulte eventos de login, logout e alteracoes administrativas com filtros de investigacao.</p>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="admin-alert admin-alert--success">@successMessage</div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="admin-alert admin-alert--error">@errorMessage</div>
+}
+
+<section class="audit-retention-grid">
+    <form asp-action="UpdateRetention" method="post" class="admin-card admin-form audit-retention-card">
+        @Html.AntiForgeryToken()
+        <div>
+            <h2>Retencao dos logs</h2>
+            <p>Configuracao persistida no banco em <strong>Audit.RetentionDays</strong>.</p>
+        </div>
+        <label>
+            Dias de retencao
+            <input type="number" name="retentionDays" min="30" max="3650" value="@Model.Retention.RetentionDays" />
+        </label>
+        <div class="admin-actions">
+            <button type="submit">Salvar politica</button>
+        </div>
+    </form>
+
+    <form asp-action="PurgeExpired" method="post" class="admin-card admin-form audit-retention-card">
+        @Html.AntiForgeryToken()
+        <div>
+            <h2>Limpeza manual</h2>
+            <p>Remove eventos anteriores a @Model.Retention.CutoffDate.ToString("dd/MM/yyyy HH:mm:ss") UTC.</p>
+        </div>
+        <p class="admin-help-text">
+            A limpeza tambem gera um evento de auditoria com a quantidade de registros removidos.
+        </p>
+        <div class="admin-actions">
+            <button type="submit">Executar limpeza</button>
+        </div>
+    </form>
+</section>
+
+<form method="get" class="admin-card admin-form audit-filter">
+    <div class="admin-form-grid">
+        <label>
+            Data inicial
+            <input type="date" asp-for="Filters.From" name="From" />
+        </label>
+        <label>
+            Data final
+            <input type="date" asp-for="Filters.To" name="To" />
+        </label>
+        <label>
+            Usuario
+            <input asp-for="Filters.UserName" name="UserName" placeholder="E-mail ou nome do usuario" />
+        </label>
+        <label>
+            Acao
+            <select asp-for="Filters.Action" name="Action">
+                <option value="">Todas</option>
+                @foreach (var action in Model.AvailableActions)
+                {
+                    <option value="@action">@action</option>
+                }
+            </select>
+        </label>
+        <label>
+            Entidade
+            <select asp-for="Filters.EntityName" name="EntityName">
+                <option value="">Todas</option>
+                @foreach (var entity in Model.AvailableEntities)
+                {
+                    <option value="@entity">@entity</option>
+                }
+            </select>
+        </label>
+        <label>
+            Busca
+            <input asp-for="Filters.Search" name="Search" placeholder="Detalhes, correlation ID, IP ou entidade" />
+        </label>
+        <label>
+            Itens por pagina
+            <select name="pageSize">
+                @foreach (var size in new[] { 10, 25, 50, 100 })
+                {
+                    if (Model.PageSize == size)
+                    {
+                        <option value="@size" selected>@size</option>
+                    }
+                    else
+                    {
+                        <option value="@size">@size</option>
+                    }
+                }
+            </select>
+        </label>
+    </div>
+
+    <div class="admin-actions">
+        <a asp-action="Index">Limpar</a>
+        <a asp-action="ExportCsv"
+           asp-route-From="@Model.Filters.From?.ToString("yyyy-MM-dd")"
+           asp-route-To="@Model.Filters.To?.ToString("yyyy-MM-dd")"
+           asp-route-UserName="@Model.Filters.UserName"
+           asp-route-Action="@Model.Filters.Action"
+           asp-route-EntityName="@Model.Filters.EntityName"
+           asp-route-Search="@Model.Filters.Search">Exportar CSV</a>
+        <button type="submit">Filtrar</button>
+    </div>
+</form>
+
+<div class="audit-result-summary">
+    <strong>@Model.TotalItems</strong> eventos encontrados
+    <span>Pagina @Model.Page de @Model.TotalPages</span>
+</div>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Data/Hora UTC</th>
+                <th>Acao</th>
+                <th>Entidade</th>
+                <th>Usuario</th>
+                <th>IP</th>
+                <th>Correlation ID</th>
+                <th>Detalhes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Logs.Any())
+            {
+                @foreach (var log in Model.Logs)
+                {
+                    <tr>
+                        <td>@log.OccurredAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td><strong>@log.Action</strong></td>
+                        <td>
+                            @log.EntityName
+                            @if (!string.IsNullOrWhiteSpace(log.EntityId))
+                            {
+                                <span>@log.EntityId</span>
+                            }
+                        </td>
+                        <td>@(log.UserName ?? "-")</td>
+                        <td>@(log.IpAddress ?? "-")</td>
+                        <td>@(log.CorrelationId ?? "-")</td>
+                        <td>@(log.Details ?? "-")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7">Nenhum evento de auditoria registrado ate o momento.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<nav class="audit-pagination" aria-label="Paginacao da auditoria">
+    @if (Model.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.Page - 1)"
+           asp-route-pageSize="@Model.PageSize"
+           asp-route-From="@Model.Filters.From?.ToString("yyyy-MM-dd")"
+           asp-route-To="@Model.Filters.To?.ToString("yyyy-MM-dd")"
+           asp-route-UserName="@Model.Filters.UserName"
+           asp-route-Action="@Model.Filters.Action"
+           asp-route-EntityName="@Model.Filters.EntityName"
+           asp-route-Search="@Model.Filters.Search">Anterior</a>
+    }
+    else
+    {
+        <span>Anterior</span>
+    }
+
+    <strong>@Model.Page / @Model.TotalPages</strong>
+
+    @if (Model.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.Page + 1)"
+           asp-route-pageSize="@Model.PageSize"
+           asp-route-From="@Model.Filters.From?.ToString("yyyy-MM-dd")"
+           asp-route-To="@Model.Filters.To?.ToString("yyyy-MM-dd")"
+           asp-route-UserName="@Model.Filters.UserName"
+           asp-route-Action="@Model.Filters.Action"
+           asp-route-EntityName="@Model.Filters.EntityName"
+           asp-route-Search="@Model.Filters.Search">Proxima</a>
+    }
+    else
+    {
+        <span>Proxima</span>
+    }
+</nav>
