@@ -2,6 +2,35 @@
 
 Historico detalhado das entregas do PortalAuth.
 
+## 0023 - PostgreSQL local por sistema
+
+Data: 31/05/2026
+
+Mudancas:
+
+- Definido padrao corporativo de um banco PostgreSQL por sistema.
+- OpenFIIs passou a usar banco local `openfiis`.
+- Adicionado Prisma ao OpenFIIs para migrations e acesso server-side.
+- Removidas dependencias e arquivos Supabase do OpenFIIs.
+- APIs internas do OpenFIIs passaram a filtrar dados por `session.user.id` vindo do PortalAuth.
+- Criado script de preparo local `scripts/Setup-LocalPostgres.ps1` no OpenFIIs.
+- Documentacao do SSO atualizada para refletir PostgreSQL local como banco oficial.
+
+## 0022 - SSO corporativo PortalAuth e OpenFIIs
+
+Data: 31/05/2026
+
+Mudancas:
+
+- PortalAuth passou a atuar como provedor OpenID Connect com OpenIddict.
+- Criados endpoints `/.well-known/openid-configuration`, `/connect/authorize`, `/connect/token`, `/connect/userinfo` e `/connect/logout`.
+- Criada migration EF Core `AddOpenIddictSso`.
+- Registrado client `openfiis-local` com redirect URI `http://localhost:3001/api/auth/callback/portalauth`.
+- Seed passou a registrar o sistema `OpenFIIs` apontando para `http://localhost:3001`.
+- OpenFIIs passou a autenticar via Auth.js/OIDC, sem login proprio.
+- Acesso direto ao OpenFIIs passou a redirecionar para o PortalAuth.
+- Criado documento `docs/SSO-OIDC.md`.
+
 ## 0021 - Seguranca, observabilidade e sistema piloto
 
 Data: 30/05/2026

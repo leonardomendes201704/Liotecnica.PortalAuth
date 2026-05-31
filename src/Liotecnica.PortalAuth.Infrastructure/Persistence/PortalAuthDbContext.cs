@@ -2,6 +2,7 @@ using Liotecnica.PortalAuth.Infrastructure.Identity;
 using Liotecnica.PortalAuth.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict.EntityFrameworkCore.Models;
 
 namespace Liotecnica.PortalAuth.Infrastructure.Persistence;
 
@@ -26,5 +27,11 @@ public sealed class PortalAuthDbContext : IdentityDbContext<ApplicationUser, App
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PortalAuthDbContext).Assembly);
 
         base.OnModelCreating(modelBuilder);
+        modelBuilder.UseOpenIddict<
+            OpenIddictEntityFrameworkCoreApplication<Guid>,
+            OpenIddictEntityFrameworkCoreAuthorization<Guid>,
+            OpenIddictEntityFrameworkCoreScope<Guid>,
+            OpenIddictEntityFrameworkCoreToken<Guid>,
+            Guid>();
     }
 }

@@ -14,6 +14,27 @@ public sealed class ChangelogController : Controller
             Entries =
             [
                 new(
+                    "0022",
+                    "SSO corporativo PortalAuth e OpenFIIs",
+                    "31/05/2026",
+                    "O PortalAuth passou a atuar como provedor OpenID Connect e o OpenFIIs foi integrado como cliente corporativo sem login proprio.",
+                    [
+                        "OpenIddict configurado no PortalAuth.",
+                        "Criados endpoints OIDC de discovery, autorizacao, token, userinfo e logout.",
+                        "Client `openfiis-local` registrado por seed.",
+                        "OpenFIIs cadastrado no dashboard corporativo.",
+                        "OpenFIIs passou a autenticar via Auth.js/OIDC.",
+                        "Supabase passou a ser acessado por APIs server-side do Next.js.",
+                        "Criada migration Supabase para remover dependencia de `auth.uid()`."
+                    ],
+                    [
+                        "Criada migration EF Core `AddOpenIddictSso`.",
+                        "Criado `ConnectController`.",
+                        "Criado `OpenIddictClientSeeder`.",
+                        "Criado documento `docs/SSO-OIDC.md`.",
+                        "Criada entrega `docs/entregas/0022-sso-openfiis`."
+                    ]),
+                new(
                     "0021",
                     "Seguranca, observabilidade e sistema piloto",
                     "30/05/2026",

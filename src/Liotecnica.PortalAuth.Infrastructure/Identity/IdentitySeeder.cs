@@ -76,15 +76,29 @@ public static class IdentitySeeder
             new CorporateSystem("CRM", "CRM", "Gestao de clientes e oportunidades", "https://crm.local", "CR", false),
             new CorporateSystem("Documentos", "DOCUMENTOS", "Repositorio corporativo e arquivos", "https://documentos.local", "DC", false),
             new CorporateSystem("Aprovacoes", "APROVACOES", "Fluxos, tarefas e autorizacoes", "https://aprovacoes.local", "AP", true),
-            new CorporateSystem("PortalAuth API Piloto", "PORTALAUTH_API", "Sistema piloto para validar SSO, dashboard, permissoes e observabilidade.", "http://localhost:5057/swagger", "PI", false)
+            new CorporateSystem("PortalAuth API Piloto", "PORTALAUTH_API", "Sistema piloto para validar SSO, dashboard, permissoes e observabilidade.", "http://localhost:5057/swagger", "PI", false),
+            new CorporateSystem("OpenFIIs", "OPENFIIS", "Sistema de gestao de carteira FIIs integrado ao SSO corporativo do PortalAuth.", "http://localhost:3001", "OF", false)
         };
 
         foreach (var system in defaults)
         {
-            if (!await dbContext.CorporateSystems.AnyAsync(existing => existing.Code == system.Code))
+            var existing = await dbContext.CorporateSystems.FirstOrDefaultAsync(candidate => candidate.Code == system.Code);
+
+            if (existing is null)
             {
                 dbContext.CorporateSystems.Add(system);
+                continue;
             }
+
+            existing.Update(
+                system.Name,
+                system.Code,
+                system.Description,
+                system.BaseUrl,
+                system.Icon,
+                system.RequiresMfa,
+                isActive: true,
+                updatedBy: "seed");
         }
 
         await dbContext.SaveChangesAsync();

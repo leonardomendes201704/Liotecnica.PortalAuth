@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict.Abstractions;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using System.Threading.RateLimiting;
@@ -47,6 +48,47 @@ builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<IAuditRetentionService, AuditRetentionService>();
+builder.Services.AddOpenIddict()
+    .AddCore(options =>
+    {
+        options.UseEntityFrameworkCore()
+            .UseDbContext<PortalAuthDbContext>()
+            .ReplaceDefaultEntities<Guid>();
+    })
+    .AddServer(options =>
+    {
+        options.SetAuthorizationEndpointUris("/connect/authorize")
+            .SetTokenEndpointUris("/connect/token")
+            .SetUserInfoEndpointUris("/connect/userinfo")
+            .SetEndSessionEndpointUris("/connect/logout");
+
+        options.AllowAuthorizationCodeFlow()
+            .AllowRefreshTokenFlow();
+
+        options.RegisterScopes(
+            OpenIddictConstants.Scopes.Email,
+            OpenIddictConstants.Scopes.Profile,
+            OpenIddictConstants.Scopes.Roles,
+            OpenIddictConstants.Scopes.OfflineAccess,
+            "permissions",
+            "department");
+
+        options.AddDevelopmentEncryptionCertificate()
+            .AddDevelopmentSigningCertificate();
+
+        options.IgnoreEndpointPermissions();
+
+        var aspNetCore = options.UseAspNetCore()
+            .EnableAuthorizationEndpointPassthrough()
+            .EnableTokenEndpointPassthrough()
+            .EnableUserInfoEndpointPassthrough()
+            .EnableEndSessionEndpointPassthrough();
+
+        if (builder.Environment.IsDevelopment())
+        {
+            aspNetCore.DisableTransportSecurityRequirement();
+        }
+    });
 builder.Services.AddLiotecnicaWebBuildingBlocks();
 builder.Services.AddLiotecnicaHealthChecks();
 builder.Services.AddOpenTelemetry()
@@ -146,6 +188,7 @@ if (app.Environment.IsDevelopment())
 
     await dbContext.Database.MigrateAsync();
     await IdentitySeeder.SeedAsync(app.Services);
+    await OpenIddictClientSeeder.SeedAsync(app.Services);
 }
 
 app.Run();

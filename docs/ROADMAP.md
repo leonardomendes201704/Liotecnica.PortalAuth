@@ -111,3 +111,36 @@ Entregas previstas:
 - [x] Liberar acesso ao perfil administrador.
 - [x] Documentar fluxo de validacao.
 - [x] Validar integracao com dashboard, auditoria e observabilidade.
+
+## Fase 6 - SSO Corporativo OpenFIIs
+
+Status: concluida.
+
+Objetivo: transformar o PortalAuth em provedor OpenID Connect corporativo e integrar o sistema OpenFIIs sem login proprio.
+
+Entregas previstas:
+
+- [x] Configurar OpenIddict no PortalAuth.
+- [x] Persistir aplicacoes, autorizacoes, escopos e tokens OIDC no PostgreSQL.
+- [x] Registrar client `openfiis-local`.
+- [x] Publicar endpoints OIDC padrao.
+- [x] Emitir claims `sub`, `email`, `name`, `role`, `permission` e `department`.
+- [x] Registrar OpenFIIs como sistema corporativo local.
+- [x] Substituir login proprio do OpenFIIs por Auth.js/OIDC.
+- [x] Proteger acesso direto ao OpenFIIs via sessao corporativa.
+- [x] Documentar fluxo, variaveis e validacao.
+
+## Fase 7 - PostgreSQL local por sistema
+
+Status: concluida.
+
+Objetivo: padronizar sistemas corporativos com banco PostgreSQL proprio por sistema, mantendo o PortalAuth apenas como identidade central.
+
+Entregas previstas:
+
+- [x] Definir padrao de um banco PostgreSQL por sistema.
+- [x] Migrar OpenFIIs para banco local `openfiis`.
+- [x] Adicionar Prisma e migrations ao OpenFIIs.
+- [x] Remover dependencias e arquivos Supabase do OpenFIIs.
+- [x] Manter isolamento por usuario via claim OIDC `sub`.
+- [x] Documentar setup local do banco por sistema.
